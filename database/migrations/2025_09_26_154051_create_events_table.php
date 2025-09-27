@@ -13,12 +13,6 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('creator_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->string('title',100);
-            $table->text('description')->nullable();
-            $table->dateTime('starts_at');
-            $table->string('location',200);
-            $table->unsignedInteger('capacity');
             $table->timestamps();
         });
     }

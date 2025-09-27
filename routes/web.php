@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EventController;
 
 /*Route::get('/', function () {
     return view('welcome');
@@ -22,3 +23,6 @@ Route::get('/',function(){
 
 Route::redirect('*/', '/login')->name('home');
 require __DIR__.'/auth.php';
+
+Route::resource('events',EventController::class)->middleware('auth');
+Route::get('/events-view',[EventController::class,'publicEvents'])->name('events.id');
