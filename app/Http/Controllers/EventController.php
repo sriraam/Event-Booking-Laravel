@@ -4,12 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Event;
+use App\Models\Category;
 
 class EventController extends Controller
 {
-public function publicEvents(){
-    $events = Event::UpcomingEvents()->orderBy('starts_at')->paginate(5);
-    return view('events.id',compact('events'));
+public function publicEvents(Request $request){
+    $query = Event::with('category')->UpcomingEvents()->orderBy('starts_at');
+    
+    if ($request->filled('category')) {
+        $query->where('category_id', $request->category);
+    }
+
+    $events=$query->paginate(5)->withQueryString();
+    $categories = Category::orderBy('name')->get();
+
+    return view('events.id',compact('events','categories'));
 }
 
     /**
@@ -26,7 +35,8 @@ public function publicEvents(){
     public function create()
     {
         abort_unless(auth()->user()->role === 'organiser', 403);
-        return view('events.createEvent');
+        $categories = Category::orderby('name')->get();
+        return view('events.createEvent',compact('categories'));
     }
 
     /**
@@ -39,11 +49,17 @@ public function publicEvents(){
             'title' => 'required|max:50',
             'starts_at'=>'required|date|after:now',
             'location'=>'required|max:200',
-            'capacity'=>'required|integer|min:1'
+            'capacity'=>'required|integer|min:1',
+            'category_id'=>'required|exists:categories,id',
         ]);
+
         $data['creator_id']=auth()->id();
+        
         $event = Event::create($data);
+        
+        $event->save();
         return redirect()->route('events.show',$event)->with('ok','Event created');
+    
     }
 
     /**
@@ -61,7 +77,10 @@ public function publicEvents(){
     public function edit(Event $event)
     {
         abort_unless(auth()->id() === $event->creator_id, 403);
-        return view('events.editEvent', compact('event'));
+        
+        $categories = Category::orderBy('name')->get();
+
+        return view('events.editEvent', compact('event','categories'));
     }
 
     /**
@@ -78,8 +97,12 @@ public function publicEvents(){
             'capacity'=>'required|integer|min:1'
         ]);
         $event->update($data);
-            
-        return redirect()->route('events.showEvent',$event)->with('ok','Event updated');
+
+        //$event->categories()->associate($request->input('category_id'));
+        
+        $event->save();
+
+        return redirect()->route('events.show',$event)->with('ok','Event updated');
        // return view('events.showEvent',compact('event'));
     }
 
@@ -91,5 +114,17 @@ public function publicEvents(){
         abort_unless(auth()->id() === $event->creator_id,403);
         $event->delete();
         return redirect()->route('events.id')->with('ok','Event deleted');
+    }
+
+    public function publicIndex(Request $req){
+        $q = Event::with('categories')->upcoming()->orderBy('starts_at');
+        if($req->filled('category')){
+            $q->whereHas('categories',fn($v)=>$v->where('categories.id',$r->category));
+        }
+        $events = $q->pagination(5)->withQueryString();
+        
+        $categories = Category::orderBy('name')->get();
+        
+        return view('events.index',compact('events','categories'));
     }
 }

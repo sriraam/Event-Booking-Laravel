@@ -28,6 +28,17 @@
                   value="{{ old('capacity', $event->capacity) }}" class="border p-2 w-full" required>
         </div>
 
+        <div>
+        <select name="category_id" required>
+            <option value="">-- Select Category --</option>
+            @foreach($categories as $cat)
+                <option value="{{ $cat->id }}" @selected(old('category_id', $event->category_id ?? '') == $cat->id)>
+                    {{ $cat->name }}
+                </option>
+            @endforeach
+        </select>
+        </div>
+
         <button class="px-3 py-2 border">Update</button>
   </form>
 

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->dateTime('starts_at');
             $table->string('location',200);
             $table->unsignedInteger('capacity');
+            $table->foreignId('category_id')->references('id')->on('categories')->cascadeOnDelete();
             $table->timestamps();
         });
     }

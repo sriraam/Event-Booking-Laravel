@@ -5,6 +5,15 @@
         <label>Starts At <input type="datetime-local" name="starts_at" required></label><br>
         <label>Location <input name="location" value="{{ old('location')}}" required></label><br>
         <label>Capacity <input type="number" name="capacity" min="1" required></label><br>
+        <label>Category:</label>
+        <select name="category_id" required>
+            <option value="">-- Select Category --</option>
+            @foreach($categories as $cat)
+                <option value="{{ $cat->id }}" @selected(old('category_id', $event->category_id ?? '') == $cat->id)>
+                    {{ $cat->name }}
+                </option>
+            @endforeach
+        </select>
         <button>Save</button>
     </form>
 </x-app-layout>

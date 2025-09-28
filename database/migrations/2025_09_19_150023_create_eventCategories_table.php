@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('event_category', function (Blueprint $table) {
+        Schema::create('eventCategories', function (Blueprint $table) {
             $table->foreignId('event_id')->references('id')->on('events')->cascadeOnDelete();
             $table->foreignId('category_id')->references('id')->on('categories')->cascadeOnDelete();
             $table->primary(['event_id','category_id']);
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('event_category');
+        Schema::dropIfExists('eventCategories');
     }
 };
