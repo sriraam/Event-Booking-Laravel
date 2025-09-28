@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreignId('event_id')->references('id')->on('events')->cascadeOnDelete();
+            $table->unique(['user_id','event_id']);
             $table->timestamps();
         });
     }

@@ -79,7 +79,7 @@ public function publicEvents(){
         ]);
         $event->update($data);
             
-        return redirect()->route('events.show',$event)->with('ok','Event updated');
+        return redirect()->route('events.showEvent',$event)->with('ok','Event updated');
        // return view('events.showEvent',compact('event'));
     }
 

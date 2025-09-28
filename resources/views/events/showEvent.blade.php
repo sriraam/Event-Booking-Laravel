@@ -11,4 +11,11 @@
             @csrf @method('DELETE') <button>Delete</button>
         </form>
     @endif
+    @auth
+        @if(auth()->user()->role === 'attendee')
+            <form method="POST" action="{{ route('bookings.store',$event)}}" class="mt-3">@csrf
+                <button>Book Now</button>
+            </form>
+        @endif
+    @endauth
 </x-app-layout>

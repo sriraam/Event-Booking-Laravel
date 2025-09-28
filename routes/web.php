@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\BookingController;
 
 /*Route::get('/', function () {
     return view('welcome');
@@ -26,3 +27,8 @@ require __DIR__.'/auth.php';
 
 Route::resource('events',EventController::class)->middleware('auth');
 Route::get('/events-view',[EventController::class,'publicEvents'])->name('events.id');
+
+Route::post('/events/{event}/book',[BookingController::class,'store'])->middleware('auth')->name('bookings.store');
+Route::get('/my-bookings',[BookingController::class,'index'])->middleware('auth')->name('bookings.index');
+
+Route::get('/events/{event}',[EventController::class,'show'])->name('events.show');

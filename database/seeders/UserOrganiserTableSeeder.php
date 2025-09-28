@@ -19,5 +19,11 @@ class UserOrganiserTableSeeder extends Seeder
             'password'=>bcrypt('password'),
             'role'=>'organiser'
         ]);
+        DB::table('users')->insert([
+            'name'=>'test',
+            'email'=>'test@test.com',
+            'password'=>bcrypt('password'),
+            'role'=>'attendee'
+        ]);
     }
 }
