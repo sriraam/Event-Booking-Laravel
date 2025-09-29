@@ -9,13 +9,17 @@ use App\Models\Category;
 class EventController extends Controller
 {
 public function publicEvents(Request $request){
-    $query = Event::with('category')->UpcomingEvents()->orderBy('starts_at');
+    $events = Event::with('category')
+    ->when($request->filled('category_id'), fn ($q) => $q->where('category_id', $request->category_id))
+    ->UpcomingEvents()
+    ->orderBy('starts_at')
+    ->paginate(5)
+    ->withQueryString();
     
-    if ($request->filled('category')) {
-        $query->where('category_id', $request->category);
-    }
+   // if ($request->filled('category')) {
+  //      $evt_cat->where('category_id', $request->category);
+   // }
 
-    $events=$query->paginate(5)->withQueryString();
     $categories = Category::orderBy('name')->get();
 
     return view('events.id',compact('events','categories'));
@@ -142,5 +146,15 @@ public function publicEvents(Request $request){
     
     return view('events.calendar',compact('year','month','start','prev','next','eventsByDay','categories'));
 }
+
+public function filter(\Illuminate\Http\Request $req){
+    $events = Event::with('category')
+        ->when($req->filled('category_id'),function($q) use ($req) {return $q->where('category_id', $req->category_id); })
+        ->upcomingEvents()->orderBy('starts_at')->paginate(5)
+        ->withQueryString();
+
+        return view('events.list',compact('events'));
+    }
+
 
 }

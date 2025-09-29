@@ -25,13 +25,17 @@ Route::get('/',function(){
 Route::redirect('*/', '/login')->name('home');
 require __DIR__.'/auth.php';
 
-Route::resource('events',EventController::class)->middleware('auth');
-Route::get('/events-view',[EventController::class,'publicEvents'])->name('events.id');
+Route::get('/events-view',[EventController::class,'publicEvents'])->name('events.public');
+Route::get('/events/filter',[EventController::class,'filter'])->name('events.filter');
+
+Route::resource('events',EventController::class)->except(['index','show'])->middleware('auth');
+//Route::get('/events-view',[EventController::class,'publicEvents'])->name('events.id');
 
 Route::post('/events/{event}/book',[BookingController::class,'store'])->middleware('auth')->name('bookings.store');
 Route::get('/my-bookings',[BookingController::class,'index'])->middleware('auth')->name('bookings.index');
 
 Route::get('/events/{event}',[EventController::class,'show'])->name('events.show');
 
-Route::get('/calender',[EventController::class,'calendar'])->name('calendar');
+Route::get('/calendar',[EventController::class,'calendar'])->name('calendar');
 Route::post('/events/{event}/waitlist',[WaitlistController::class,'store'])->middleware('auth')->name('waitlist.store');
+
