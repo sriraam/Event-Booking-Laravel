@@ -32,3 +32,6 @@ Route::post('/events/{event}/book',[BookingController::class,'store'])->middlewa
 Route::get('/my-bookings',[BookingController::class,'index'])->middleware('auth')->name('bookings.index');
 
 Route::get('/events/{event}',[EventController::class,'show'])->name('events.show');
+
+Route::get('/calender',[EventController::class,'calendar'])->name('calendar');
+Route::post('/events/{event}/waitlist',[WaitlistController::class,'store'])->middleware('auth')->name('waitlist.store');

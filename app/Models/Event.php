@@ -15,4 +15,10 @@ class Event extends Model
     }
     public function category(){ return $this->belongsTo(Category::class); }
     
+    public function isCapacityFull():bool{
+        return $this->bookings()->count() >= $this->capacity;
+    }
+
+    public function bookings(){return $this->hasMany(Booking::class); }
+
 }

@@ -94,13 +94,10 @@ public function publicEvents(Request $request){
             'title'=>'required|max:50',
             'starts_at'=>'required|date|after:now',
             'location'=>'required|max:200',
-            'capacity'=>'required|integer|min:1'
+            'capacity'=>'required|integer|min:1',
+            'category_id'=>'required|exists:categories,id'
         ]);
         $event->update($data);
-
-        //$event->categories()->associate($request->input('category_id'));
-        
-        $event->save();
 
         return redirect()->route('events.show',$event)->with('ok','Event updated');
        // return view('events.showEvent',compact('event'));
@@ -117,9 +114,9 @@ public function publicEvents(Request $request){
     }
 
     public function publicIndex(Request $req){
-        $q = Event::with('categories')->upcoming()->orderBy('starts_at');
+        $q = Event::with('category')->upcoming()->orderBy('starts_at');
         if($req->filled('category')){
-            $q->whereHas('categories',fn($v)=>$v->where('categories.id',$r->category));
+            $q->where('category_id',$req->category);
         }
         $events = $q->pagination(5)->withQueryString();
         
@@ -127,4 +124,23 @@ public function publicEvents(Request $request){
         
         return view('events.index',compact('events','categories'));
     }
+
+    public function calendar(Request $req){
+        $year = (int)$req->input('year',now()->year);
+        $month = (int)$req -> input('month',now()->month);
+        $start = \Carbon\Carbon::create($year,$month,1)->startOfMonth();
+        $end = (clone $start)->endOfMonth();
+
+        $events = Event::with('category','bookings')
+      ->whereBetween('starts_at', [$start->copy()->startOfDay(), $end->copy()->endOfDay()])
+      ->orderBy('starts_at')->get();
+    $eventsByDay = $events->groupBy(function($evt){return $evt->starts_at->format('Y-m-d');});
+
+    $prev = (clone $start)->subMonth();
+    $next = (clone $start)->addMonth();
+    $categories = Category::orderBy('name')->get();
+    
+    return view('events.calendar',compact('year','month','start','prev','next','eventsByDay','categories'));
+}
+
 }
