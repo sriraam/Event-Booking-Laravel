@@ -37,18 +37,15 @@ window.addEventListener('error', e => console.log('[events] JS error:', e.messag
     const u = new URL(url, window.location.origin);
     u.searchParams.set('_ts', Date.now());
 
-    log('AJAX →', u.toString());
     return fetch(u.toString(), { headers: { 'X-Requested-With': 'XMLHttpRequest' }})
-      .then(r => { log('AJAX status', r.status); return r.text(); })
+      .then(r => { return r.text(); })
       .then(html => {
-        log('AJAX html length', html.length);
         listEl.innerHTML = html;
 
-        
-        const pretty = new URL(`{{ route('events.public') }}`, window.location.origin);
-        const id = u.searchParams.get('category_id') || '';
-        if (id) pretty.searchParams.set('category_id', id);
-        history.replaceState(null, '', pretty.pathname + pretty.search);
+        const bUrl = new URL(`{{ route('events.public') }}`, window.location.origin);
+        const catetoryId = u.searchParams.get('category_id') || '';
+        if (catetoryId) bUrl.searchParams.set('category_id', id);
+        history.replaceState(null, '', bUrl.pathname+bUrl.search);
       })
       .catch(err => log('AJAX error', err));
   }
@@ -72,16 +69,21 @@ window.addEventListener('error', e => console.log('[events] JS error:', e.messag
     }
   });
 
-  // 3) Restore saved filter on load
-  const saved = localStorage.getItem('event_filter_category');
+ /* const saved = localStorage.getItem('event_filter_category');
   if (saved && select.value === '') {
     log('restore saved category_id', saved);
     select.value = saved;
     loadList(`{{ route('events.filter') }}?category_id=${encodeURIComponent(saved)}`);
   } else {
     log('initial category_id', select.value || '(all)');
-  }
+  }*/
 })();
 </script>
+@guest
+  <p class="mt-4 text-sm text-gray-600">
+    To Book an Event, Please <a class="underline" href="{{route('login')}}">Login Here</a> / 
+    <a class="underline" href="{{ route('register') }}">Register</a>.
+  </p>
+  @endguest
 </x-app-layout>
 

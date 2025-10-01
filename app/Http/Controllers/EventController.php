@@ -13,12 +13,9 @@ public function publicEvents(Request $request){
     ->when($request->filled('category_id'), fn ($q) => $q->where('category_id', $request->category_id))
     ->UpcomingEvents()
     ->orderBy('starts_at')
-    ->paginate(5)
+    ->paginate(8)
     ->withQueryString();
     
-   // if ($request->filled('category')) {
-  //      $evt_cat->where('category_id', $request->category);
-   // }
 
     $categories = Category::orderBy('name')->get();
 
@@ -69,9 +66,9 @@ public function publicEvents(Request $request){
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Event $event)
     {
-        $event = Event::findOrFail($id);
+        $event->load('category');
         return view('events.showEvent',compact('event'));
     }
 

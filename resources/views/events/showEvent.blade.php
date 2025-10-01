@@ -5,7 +5,6 @@
     <h1 class="text-2x1 mb-2">{{$event->title}}</h1>
     <p>{{ $event->starts_at->toDayDateTimeString() }} | {{$event->location}}</p>
     @if($event->Category)
-    <p>CHECK</p>
         <p>
             <span class="px-2 py-1 text-sm rounded"
                   style="background: {{ $event->category->color }}20;
