@@ -8,7 +8,9 @@
             <label class"block">Title</label>
             <input name="title" value="{{ old('title', $event->title) }}" class="border p-2 w-full" required>
         </div>
-
+        <label class="block mb-2">Description</label>
+        <textarea name="description" rows="4" 
+                  class="w-full border rounded mb-3 p-2">{{ old('description', $event->description) }}</textarea>
         <div>
             <label class="block">Starts At</label>
             <input type="datetime-local" name="starts_at"

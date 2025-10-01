@@ -13,6 +13,10 @@
                 {{$et->starts_at->format('d M Y H:i') }} | {{$et->location}}
             </div>
 
+            <div class="text-sm text-gray-700">
+                Organiser:{{$et->creator->name ?? '---'}}
+            </div>
+
             @if($et->category?->name)
                 <span class="inline-block mt-1 text-xs px-2 py-0.5 rounded" 
                 style="background: {{ $color }}20; border: 1px solid {{ $color }}; color: {{ $color }}">

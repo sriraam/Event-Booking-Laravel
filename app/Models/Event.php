@@ -20,4 +20,5 @@ class Event extends Model
     }
 
     public function bookings(){return $this->hasMany(Booking::class); }
+    public function creator(){ return $this->belongsTo(User::class, 'creator_id');}
 }

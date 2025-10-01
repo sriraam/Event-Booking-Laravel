@@ -9,7 +9,7 @@ use App\Models\Category;
 class EventController extends Controller
 {
 public function publicEvents(Request $request){
-    $events = Event::with('category')
+    $events = Event::with('category','creator')
     ->when($request->filled('category_id'), fn ($q) => $q->where('category_id', $request->category_id))
     ->UpcomingEvents()
     ->orderBy('starts_at')
@@ -47,10 +47,11 @@ public function publicEvents(Request $request){
     {
         abort_unless(auth()->user()->role === 'organiser',403);
         $data = $request->validate([
-            'title' => 'required|max:50',
+            'title' => 'required|max:100',
+            'description' => 'nullable|string|max:1000',
             'starts_at'=>'required|date|after:now',
-            'location'=>'required|max:200',
-            'capacity'=>'required|integer|min:1',
+            'location'=>'required|max:255',
+            'capacity'=>'required|integer|min:1|max:1000',
             'category_id'=>'required|exists:categories,id',
         ]);
 

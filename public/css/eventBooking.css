@@ -102,3 +102,9 @@
     color: var(--badge, #2563eb);
     background: color-mix(in srgb, var(--badge, #2563eb) 12%, transparent);
 }  
+
+.event-description {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }

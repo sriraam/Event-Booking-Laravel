@@ -11,9 +11,13 @@
             </span>
         </p>
     @endif
-    
+    <p class="mb-4 text-gray-700">{{ $event->description }}</p>
     <p>{{ $event->starts_at->toDayDateTimeString() }} | {{$event->location}}</p>
+    <p class="text-gray-700"> Organised by {{ $event->creator->name ?? 'Unknown' }} </p>
     
+    <p class="text-sm text-gray-700">
+     Capacity : {{ $event->capacity }}<br>
+    </p>
     <p class="text-sm text-gray-600">
      Remaining Seats: {{ $event->capacity - $event->bookings()->count() }}
     </p>
