@@ -1,0 +1,89 @@
+.user-info {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ba0eef; /* Violet */
+    margin-left: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.role {
+    margin-left: 0.5rem;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+    border: 1px solid #dc32c2; /* Pink */
+    border-radius: 0.25rem;
+    background-color: #ececec; /* light white */
+}
+
+/* --- General Table Styling --- */
+.table-report {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.table-report th,
+.table-report td {
+    border: 1px solid #d1d5db; 
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.table-report th {
+    background-color: #f9fafb; 
+    font-weight: 600;
+}
+
+.table-report tr:nth-child(even) {
+    background-color: #f3f4f6; 
+}
+
+.table-report a {
+    color: #2563eb; 
+    text-decoration: none;
+}
+
+.table-report a:hover {
+    text-decoration: underline;
+}
+
+/* --- Button Styling --- */
+.btn {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #10a0b9; 
+    color: white;
+    border: 1px solid #056f96;
+}
+
+.btn-primary:hover {
+    background-color: #057496;
+}
+
+.btn-success {
+    background: #10aeb9; 
+    color: #fff;
+    border-color: #057796;  
+  }
+.btn-success:hover { background: #059669; }
+
+/* Category Badge */
+.badge{
+    display:inline-block;
+    margin-top: .35rem;
+    font-size: .75rem;
+    padding: .15rem;
+    border: 1 px solid var(--badge, #2563eb);
+    color: var(--badge, #2563eb);
+    background: color-mix(in srgb, var(--badge, #2563eb) 12%, transparent);
+}  

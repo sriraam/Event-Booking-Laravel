@@ -11,6 +11,10 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!--Custom Css script -->
+        <link rel = "stylesheet" href="{{ asset('css/eventBooking.css')}}">
+        <link rel = "stylesheet" href="{{ asset('css/messages.css')}}">
+        
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -29,8 +33,14 @@
 
             <!-- Page Content -->
             <main>
+                @include('layouts.flash') <!--Displays flash alert -->
                 {{ $slot }}
             </main>
         </div>
+        <script>
+            setTimeout(() => {
+             document.querySelectorAll('.alert').forEach(el => el.remove());
+                }, 3000);
+        </script>
     </body>
 </html>

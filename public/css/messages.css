@@ -1,0 +1,21 @@
+/*public/css/messages.css*/
+
+.alert{
+padding: 14px 16px;
+border-radius: 6px;
+margin-bottom: 12px;
+font-size : 14px;
+font-weight: 500;
+}
+
+.alert-success{
+    background-color: #c57dd1;
+    border: 2px solid #ae31c4;
+    color: #560065;
+}
+
+.alert-error{
+    background-color: #db5454;
+    border: 2px solid #bc2d2d;
+    color: #a30000;
+}

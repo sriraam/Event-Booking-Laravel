@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class UserOrganiserTableSeeder extends Seeder
+class SecondOrganiserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,18 +14,10 @@ class UserOrganiserTableSeeder extends Seeder
     public function run(): void
     {
         DB::table('users')->insert([
-            'name'=>'admin',
-            'email'=>'admin@test.com',
+            'name'=>'admin2',
+            'email'=>'admin2@test.com',
             'password'=>bcrypt('password'),
             'role'=>'organiser'
-        ]);
-
-    
-        DB::table('users')->insert([
-            'name'=>'test',
-            'email'=>'test@test.com',
-            'password'=>bcrypt('password'),
-            'role'=>'attendee'
         ]);
     }
 }

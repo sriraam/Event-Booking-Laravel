@@ -64,7 +64,7 @@ public function publicEvents(Request $request){
     }
 
     /**
-     * Display the specified resource.
+     * Display the  event.
      */
     public function show(Event $event)
     {
@@ -73,7 +73,7 @@ public function publicEvents(Request $request){
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified event.
      */
     public function edit(Event $event)
     {
@@ -85,7 +85,7 @@ public function publicEvents(Request $request){
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the Event.
      */
     public function update(Request $request, Event $event)
     {
@@ -105,13 +105,17 @@ public function publicEvents(Request $request){
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the Event.
      */
     public function destroy(Event $event)
     {
         abort_unless(auth()->id() === $event->creator_id,403);
+        if($event->bookings()->count() > 0)
+        {
+            return redirect()->route('events.show',$event)->with('error','This Event cannot be deleted because it is already booked');
+        }
         $event->delete();
-        return redirect()->route('events.id')->with('ok','Event deleted');
+        return redirect()->route('events.public')->with('ok','Event deleted Successfully');
     }
 
     public function publicIndex(Request $req){
