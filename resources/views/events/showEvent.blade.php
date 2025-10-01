@@ -1,6 +1,6 @@
 <x-app-layout>
     <h1 class="text-2x1 mb-2">{{$event->title}}</h1>
-    <p>{{ $event->starts_at->toDayDateTimeString() }} | {{$event->location}}</p>
+    
     @if($event->Category)
         <p>
             <span class="px-2 py-1 text-sm rounded"
@@ -11,7 +11,12 @@
             </span>
         </p>
     @endif
-
+    
+    <p>{{ $event->starts_at->toDayDateTimeString() }} | {{$event->location}}</p>
+    
+    <p class="text-sm text-gray-600">
+     Remaining Seats: {{ $event->capacity - $event->bookings()->count() }}
+    </p>
     @if(auth()->id() === $event->creator_id)
         <a class="underline" href="{{ route('events.edit',$event) }}">Edit</a>
         <form action="{{ route('events.destroy',$event) }}" method="POST" 
@@ -21,9 +26,40 @@
     @endif
     @auth
         @if(auth()->user()->role === 'attendee')
+           
+            @php 
+                $alreadyBooked = $event->bookings()->where('user_id', auth()->id())->exists();
+                $isFull = $event->bookings()->count() >= $event->capacity;
+            
+            @endphp
+            @if($alreadyBooked)
+            <div class="alert-success mb-3">
+                You have booked this event.
+            </div>
+            @else
+                 @if($errors->has('booking'))
+                     <div class="alert-error">
+                       {{ $errors->first('booking') }}
+                     </div>
+                @endif
             <form method="POST" action="{{ route('bookings.store',$event)}}" class="mt-3">@csrf
-                <button>Book Now</button>
+            <input type="hidden" name="event_id" value="{{$event->id}}">    
+           
+            <button class="btn {{$isFull ? 'btn-soldout' : 'btn-primary'}}" 
+            {{$isFull ? 'disabled' : ''}}>
+            {{$isFull ? 'Sold Out' : 'Book Now'}}
+            </button>
             </form>
+            @if($isFull)
+            <div class="mb-3 p-2 bg-red-100 text-red-800 border border-red-300 rounded mt-2">
+               {{ ('The event is full. You cannot book it. Check other events ->') }}
+               <dic class="mt-4"><a href="{{ route('events.public') }}" class="btn btn-secondary">
+                View All Events
+                </a>
+            </div>
+            @endif
+
+        @endif
         @endif
     @endauth
 </x-app-layout>

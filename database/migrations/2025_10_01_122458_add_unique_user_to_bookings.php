@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            //
+            $table->unique(['event_id','user_id']); //Avoid duplicate bookings from same user
         });
     }
 
@@ -21,8 +21,5 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('bookings', function (Blueprint $table) {
-            //
-        });
     }
 };

@@ -2,24 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Booking;
 
 class BookingController extends Controller
 {
-    public function store(Event $event){
+    public function store(Request $request, Event $event){
         abort_unless(auth()->user()->role === 'attendee', 403);
-        $isBooked = Booking::where('user_id',auth()->id())->where('event_id',$event->id)->exists();
-            if ($isBooked) return back()->withErrors(['booking'=>'Already booked']);
-    
-        $curBooking = Booking::where('event_id',$event->id)->count();
-        if($curBooking >= $event->capacity){
-             return back()->withErrors(['booking'=>'Event is full']);
+        
+        $userId= auth()->id();
+
+        //Validating unique bookings to avoid duplication
+        $request->validate([
+            'event_id' => [ 'required',
+            Rule::unique('bookings')->where(function($q) use ($userId,$event) {
+                return $q->where('user_id',$userId)->where('event_id',$event->id);}),],],
+                ['event_id.unique' => 'You have already booked this event.',
+            ]);
+
+            $current = $event->bookings()->count();
+            if($current >= $event->capacity){
+                return back()->withErrors(['bookings' => 'This event is full. You cannot book it.']);                
             }
         
         Booking::create(['user_id'=>auth()->id(),'event_id'=>$event->id]);
-        return redirect()->route('bookings.index')->with('ok','Booked!');
+        return redirect()->route('bookings.index')->with('ok','Booking has been confirmed!');
 
     }
 

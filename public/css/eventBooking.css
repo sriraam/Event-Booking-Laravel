@@ -61,21 +61,36 @@
 }
 
 .btn-primary {
-    background-color: #10a0b9; 
-    color: white;
-    border: 1px solid #056f96;
+    background-color: #4a36ff; 
+    color: rgb(255, 255, 255);
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #1e00b3;
 }
 
 .btn-primary:hover {
-    background-color: #057496;
+    background-color: #030097;
 }
 
 .btn-success {
-    background: #10aeb9; 
+    background: #0004ff; 
     color: #fff;
-    border-color: #057796;  
+    border-color: #020084;  
   }
 .btn-success:hover { background: #059669; }
+
+/*Button Soldout*/
+.btn-soldout {
+    background-color: #c70303; 
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #c00000;
+}
+
+.btn-soldout:hover {
+    background-color: #c70303;
+}
 
 /* Category Badge */
 .badge{
