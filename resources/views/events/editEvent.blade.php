@@ -2,7 +2,8 @@
     <hi class="text-2xl mb-4">Edit Event</h1>
 
     <form method="POST" action="{{ route('events.update',$event) }}" class="space-y-3">
-        @csrf @method('PUT')
+        @csrf 
+        @method('PUT')
 
         <div>
             <label class"block">Title</label>
@@ -31,18 +32,28 @@
         </div>
 
         <div>
-        <select name="category_id" required>
-            <option value="">-- Select Category --</option>
+        <label class="block mb-2 font-semibold">Categories</label>
+        <select name="category_ids[]" multiple class="multi-category">
+        @php 
+            $selected = old('category_ids', $event->categories->pluck('id')->toArray()); 
+        @endphp
             @foreach($categories as $cat)
-                <option value="{{ $cat->id }}" @selected(old('category_id', $event->category_id ?? '') == $cat->id)>
-                    {{ $cat->name }}
-                </option>
-            @endforeach
+             <option value="{{ $cat->id }}" @selected(in_array($cat->id, $selected))>
+              {{ $cat->name }}
+             </option>
+             @endforeach
         </select>
         </div>
 
-        <button class="px-3 py-2 border">Update</button>
+        <button type="submit" class="px-3 py-2 border">Update</button>
   </form>
-
-
+  @if ($errors->any())
+    <div class="alert-error mt-2">
+        <ul class="list-disc pl-5">
+            @foreach ($errors->all() as $err)
+                <li>{{ $err }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 </x-app-layout>

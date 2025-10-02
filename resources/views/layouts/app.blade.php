@@ -17,6 +17,7 @@
         
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
@@ -35,7 +36,12 @@
             <main>
                 @include('layouts.flash') <!--Displays flash alert -->
                 {{ $slot }}
-            </main>
+
+            <!--js choices script -->
+            <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+            <!--js wrapper script for categories-->
+            <script src="{{ asset('js/CategoriesChoice.js') }}"></script>    
+        </main>
         </div>
         <script>
             setTimeout(() => {

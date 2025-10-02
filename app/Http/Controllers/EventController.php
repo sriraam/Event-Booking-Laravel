@@ -9,13 +9,18 @@ use App\Models\Category;
 class EventController extends Controller
 {
 public function publicEvents(Request $request){
-    $events = Event::with('category','creator')
-    ->when($request->filled('category_id'), fn ($q) => $q->where('category_id', $request->category_id))
+    $evts = Event::with('categories','creator')
     ->UpcomingEvents()
-    ->orderBy('starts_at')
-    ->paginate(8)
-    ->withQueryString();
+    ->orderBy('starts_at');
     
+    //Filter based on selected category
+    if($request->filled('category_id')){
+        $evts->whereHas('categories',function($evt)
+        {return $$evt->where('cateegories.id',$request->category_id);
+        });
+    }
+    
+    $events=$evts->paginate(8)->withQueryString();
 
     $categories = Category::orderBy('name')->get();
 
@@ -52,14 +57,16 @@ public function publicEvents(Request $request){
             'starts_at'=>'required|date|after:now',
             'location'=>'required|max:255',
             'capacity'=>'required|integer|min:1|max:1000',
-            'category_id'=>'required|exists:categories,id',
+            'category_ids'=>'required|array|min:1',
+            'category_ids.*' => 'integer|exists:categories,id',
         ]);
 
         $data['creator_id']=auth()->id();
         
-        $event = Event::create($data);
-        
-        $event->save();
+        $event = Event::create(collect($data)->except('category_ids')->all());
+        //Add categories
+        $event->categories()->sync($data['category_ids']);
+
         return redirect()->route('events.show',$event)->with('ok','Event created');
     
     }
@@ -69,7 +76,7 @@ public function publicEvents(Request $request){
      */
     public function show(Event $event)
     {
-        $event->load('category');
+        $event->load('categories');
         return view('events.showEvent',compact('event'));
     }
 
@@ -81,7 +88,7 @@ public function publicEvents(Request $request){
         abort_unless(auth()->id() === $event->creator_id, 403);
         
         $categories = Category::orderBy('name')->get();
-
+        $event->load('categories');
         return view('events.editEvent', compact('event','categories'));
     }
 
@@ -93,16 +100,18 @@ public function publicEvents(Request $request){
         abort_unless(auth()->id() === $event->creator_id, 403);
         //return view('events.showEvent',compact('event'));
         $data = $request->validate([
-            'title'=>'required|max:50',
+            'title'=>'required|max:100',
+            'description'=>'nullable',
             'starts_at'=>'required|date|after:now',
-            'location'=>'required|max:200',
-            'capacity'=>'required|integer|min:1',
-            'category_id'=>'required|exists:categories,id'
+            'location'=>'required|max:255',
+            'capacity'=>'required|integer|min:1|max:1000',
+            'category_ids'=> 'required|array|min:1',
+            'category_ids.*' => 'integer|exists:categories,id',
         ]);
-        $event->update($data);
+        $event->update(collect($data)->except('category_ids')->all());
+        $event->categories()->sync($data['category_ids']);
 
-        return redirect()->route('events.show',$event)->with('ok','Event updated');
-       // return view('events.showEvent',compact('event'));
+        return redirect()->route('events.show', $event)->with('ok','Event updated');
     }
 
     /**
@@ -120,7 +129,7 @@ public function publicEvents(Request $request){
     }
 
     public function publicIndex(Request $req){
-        $q = Event::with('category')->upcoming()->orderBy('starts_at');
+        $q = Event::with('categories','creator','bookings')->upcoming()->orderBy('starts_at');
         if($req->filled('category')){
             $q->where('category_id',$req->category);
         }
@@ -149,14 +158,17 @@ public function publicEvents(Request $request){
     return view('events.calendar',compact('year','month','start','prev','next','eventsByDay','categories'));
 }
 
-public function filter(\Illuminate\Http\Request $req){
-    $events = Event::with('category')
-        ->when($req->filled('category_id'),function($q) use ($req) {return $q->where('category_id', $req->category_id); })
-        ->upcomingEvents()->orderBy('starts_at')->paginate(5)
-        ->withQueryString();
+//Filter function for AJAX 
+public function filter(Request $req){
+    $evts = Event::with('categories','creator','bookings')->upcomingEvents()
+    ->orderBy('starts_at');
+    
+    if($req->filled('category_id')){
+        $evts->whereHas('categories', function($evt)use ($req){return $evt->where('categories.id',$req->category_id);});   
+    }        
+        $events = $evts->paginate(8)->withQueryString();
 
+        //returning the list for AJAX
         return view('events.list',compact('events'));
     }
-
-
 }

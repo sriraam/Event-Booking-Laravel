@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model {
     protected $fillable=['name','color','min_age'];
-    public function events(){ return $this->hasMany(Event::class); }
+    public function events(){ return $this->belongsToMany(Event::class); }
 }

@@ -17,12 +17,18 @@
                 Organiser:{{$et->creator->name ?? '---'}}
             </div>
 
-            @if($et->category?->name)
-                <span class="inline-block mt-1 text-xs px-2 py-0.5 rounded" 
-                style="background: {{ $color }}20; border: 1px solid {{ $color }}; color: {{ $color }}">
-                    {{ $et->category->name }}
-                </span>
+            <!-- Category badges -->
+            @if($et->categories && $et->categories->isNotEmpty())
+            <div class="mt-1 flex flex-wrap gap-2">
+              @foreach($et->categories as $cat)
+                  <span class="inline-block text-xs px-2 py-0.5 rounded"
+                  style="background: {{ $cat->color }}20; border: 1px solid {{ $cat->color }}; color: {{ $cat->color }}">
+                   {{ $cat->name }}
+                 </span>
+             @endforeach
+            </div>
             @endif
+            
         </li>
     @endforeach
 </ul>

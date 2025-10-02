@@ -92,7 +92,29 @@
     background-color: #c70303;
 }
 
-/* Category Badge */
+
+
+  /* Event UI */
+.event-card { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:12px; }
+.event-card:hover { background:#f9fafb; }
+
+.event-description {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  
+
+/* Category label */
+.category-label {
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:12px;
+    font-size:12px;
+    font-weight:500;
+    margin-right:6px;
+    margin-top:6px;
+}
 .badge{
     display:inline-block;
     margin-top: .35rem;
@@ -102,9 +124,3 @@
     color: var(--badge, #2563eb);
     background: color-mix(in srgb, var(--badge, #2563eb) 12%, transparent);
 }  
-
-.event-description {
-    font-size: 1rem;
-    line-height: 1.5;
-    margin-bottom: 16px;
-  }

@@ -1,16 +1,16 @@
 <x-app-layout>
     <h1 class="text-2x1 mb-2">{{$event->title}}</h1>
-    
-    @if($event->Category)
-        <p>
-            <span class="px-2 py-1 text-sm rounded"
-                  style="background: {{ $event->category->color }}20;
-                         border: 1px solid {{ $event->category->color }};
-                         color: {{ $event->category->color }}">
-                {{ $event->category->name }}
-            </span>
-        </p>
-    @endif
+<!-- Displaying Category tags -->
+  @if($event->categories && $event->categories->isNotEmpty())
+    <div class="mt-1 flex flex-wrap gap-2">
+      @foreach($event->categories as $cat)
+        <span class="inline-block text-xs px-2 py-0.5 rounded"
+              style="background: {{ $cat->color }}20; border: 1px solid {{ $cat->color }}; color: {{ $cat->color }}">
+          {{ $cat->name }}
+        </span>
+      @endforeach
+    </div>
+  @endif
     <p class="mb-4 text-gray-700">{{ $event->description }}</p>
     <p>{{ $event->starts_at->toDayDateTimeString() }} | {{$event->location}}</p>
     <p class="text-gray-700"> Organised by {{ $event->creator->name ?? 'Unknown' }} </p>
