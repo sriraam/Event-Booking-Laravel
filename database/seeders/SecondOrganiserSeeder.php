@@ -14,6 +14,13 @@ class SecondOrganiserSeeder extends Seeder
     public function run(): void
     {
         DB::table('users')->insert([
+            'name'=>'admin',
+            'email'=>'admin@test.com',
+            'password'=>bcrypt('password'),
+            'role'=>'organiser'
+        ]);
+        
+        DB::table('users')->insert([
             'name'=>'admin2',
             'email'=>'admin2@test.com',
             'password'=>bcrypt('password'),

@@ -38,6 +38,6 @@ Route::middleware('auth')->group(function(){
     Route::post('/events/{event}/waitlist',[WaitlistController::class,'store'])->name('waitlist.store');
 });
 //Routes for policy pages
-Route::view('/privacy-policy', 'legal.privacy')->name('policy.privacy');
-Route::view('/terms-of-use', 'legal.terms')->name('policy.terms');
+Route::view('/privacy-policy', 'legal.privacy')->name('privacy');
+Route::view('//terms-of-service', 'legal.terms')->name('terms');
 require __DIR__.'/auth.php';

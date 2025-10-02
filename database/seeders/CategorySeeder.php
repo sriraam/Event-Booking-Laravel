@@ -15,7 +15,7 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             ['name' => 'Trivia', 'color' => '#3b52f6'],
-            ['name' => 'Stratergy', 'color' => '#10a34a'],
+            ['name' => 'Strategy', 'color' => '#10a34a'],
             ['name' => 'Tournament', 'color' => '#dc2026'],
             ['name' => 'GameNight', 'color' => '#5333ea'],
             ['name' => 'OpenTable', 'color' => '#f50e0b'],
