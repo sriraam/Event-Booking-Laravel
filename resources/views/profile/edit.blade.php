@@ -26,4 +26,11 @@
             </div>
         </div>
     </div>
+    <div>
+    @if(auth()->user()->accepted_terms_at)
+    <p class="text-sm text-gray-600 mt-2">
+      Consent given on {{ auth()->user()->accepted_terms_at->format('d M Y H:i') }}
+  </p>
+@endif
+    </div>
 </x-app-layout>

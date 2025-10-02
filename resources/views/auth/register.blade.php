@@ -39,6 +39,21 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
+        <div class="mt-4">
+        <label class="inline-flex items-start gap-2">
+            <input type="checkbox" name="accept_terms" value="1" required class="mt-1">
+            <span class="text-sm text-gray-700">
+                  I agree to the
+                <a class="underline" href="{{ route('policy.privacy') }}" target="_blank">Privacy Policy</a>
+                and
+                <a class="underline" href="{{ route('policy.terms') }}" target="_blank">Terms of Use</a>.
+            </span>
+        </label>
+         @error('accept_terms')
+             <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+         @enderror
+        </div>
+
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
                 {{ __('Already registered?') }}

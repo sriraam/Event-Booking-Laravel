@@ -25,9 +25,6 @@ Route::get('/events/filter',[EventController::class,'filter'])->name('events.fil
 Route::resource('events',EventController::class)->except(['index','show'])->middleware('auth');
 //Route::get('/events-view',[EventController::class,'publicEvents'])->name('events.id');
 
-
-
-
 Route::get('/events/{event}',[EventController::class,'show'])->whereNumber('event')->name('events.show');
 
 Route::get('/calendar',[EventController::class,'calendar'])->name('calendar');
@@ -40,4 +37,7 @@ Route::middleware('auth')->group(function(){
     Route::get('/my-bookings',[BookingController::class,'index'])->name('bookings.index');
     Route::post('/events/{event}/waitlist',[WaitlistController::class,'store'])->name('waitlist.store');
 });
+//Routes for policy pages
+Route::view('/privacy-policy', 'legal.privacy')->name('policy.privacy');
+Route::view('/terms-of-use', 'legal.terms')->name('policy.terms');
 require __DIR__.'/auth.php';

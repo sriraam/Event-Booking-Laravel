@@ -33,13 +33,15 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+            'accept_terms' => ['accepted'],
+        ],['accept_terms.accepted' => 'You must agree to the Privacy Policy and Terms of Use.']);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'role' => 'attendee',
             'password' => Hash::make($request->password),
+            'accepted_terms_at' => now(),
         ]);
 
         event(new Registered($user));
