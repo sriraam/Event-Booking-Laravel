@@ -6,6 +6,13 @@ use Illuminate\Http\Request;
 
 class WaitlistController extends Controller
 {
+/**
+ * Add the authenticated attendee to the waitlist for a full event.
+ *
+ * @param \App\Models\Event $event The event instance resolved via route model binding.
+ * @return \Illuminate\Http\RedirectResponse Redirects back with status or error message.
+ *
+ */
     public function store(Event $event)
     {
         abort_unless(auth()->user->role === 'attendee',403);

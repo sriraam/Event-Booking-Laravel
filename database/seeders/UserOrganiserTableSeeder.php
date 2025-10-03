@@ -39,8 +39,14 @@ class UserOrganiserTableSeeder extends Seeder
             'role'=>'attendee'
         ]);
         DB::table('users')->insert([
-            'name'=>'Robert',
-            'email'=>'robert@cbh.com',
+            'name'=>'Antony',
+            'email'=>'antony@cbh.com',
+            'password'=>bcrypt('password'),
+            'role'=>'attendee'
+        ]);
+        DB::table('users')->insert([
+            'name'=>'Billa',
+            'email'=>'billa@cbh.com',
             'password'=>bcrypt('password'),
             'role'=>'attendee'
         ]);

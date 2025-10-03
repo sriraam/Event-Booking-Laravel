@@ -8,6 +8,13 @@ use App\Models\Category;
 
 class EventController extends Controller
 {
+
+/**
+ * Display a paginated list of upcoming public events, with filtering by category.
+ *
+ * @param \Illuminate\Http\Request $request
+ * @return \Illuminate\View\View
+ */
 public function publicEvents(Request $request){
     $evts = Event::with('categories','creator')
     ->UpcomingEvents()
@@ -16,10 +23,11 @@ public function publicEvents(Request $request){
     //Filter based on selected category
     if($request->filled('category_id')){
         $evts->whereHas('categories',function($evt)
-        {return $$evt->where('cateegories.id',$request->category_id);
+        {return $evt->where('cateegories.id',$request->category_id);
         });
     }
     
+    //Displays 8 events in a page
     $events=$evts->paginate(8)->withQueryString();
 
     $categories = Category::orderBy('name')->get();
@@ -27,27 +35,26 @@ public function publicEvents(Request $request){
     return view('events.id',compact('events','categories'));
 }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        
-    }
+/**
+ * Shows the form for creating a new event.
+ * This method ensures that 'organiser' can create the event.
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        abort_unless(auth()->user()->role === 'organiser', 403);
-        $categories = Category::orderby('name')->get();
-        return view('events.createEvent',compact('categories'));
-    }
+ * @return \Illuminate\View\View
+ */
+public function create()
+{
+    abort_unless(auth()->user()->role === 'organiser', 403);
+    $categories = Category::orderby('name')->get();
+    return view('events.createEvent',compact('categories'));
+}
 
-    /**
-     * Store a newly created resource in storage.
-     */
+/**
+ * Store a newly created event in the database.
+ * creates a new event record, and attaches selected categories via a many-to-many relationship.
+ *
+ * @param \Illuminate\Http\Request $request containing event data.
+ * @return \Illuminate\Http\RedirectResponse Redirects to the event view
+ */
     public function store(Request $request)
     {
         abort_unless(auth()->user()->role === 'organiser',403);
@@ -71,30 +78,50 @@ public function publicEvents(Request $request){
     
     }
 
-    /**
-     * Display the  event.
-     */
-    public function show(Event $event)
+/**
+ * Display the details of a specific event.
+ *
+ *returns the view responsible for rendering the event details.
+ *
+ * @param \App\Models\Event $event instance contains event data.
+ * @return \Illuminate\View\View The view displaying the event details.
+ */
+public function show(Event $event)
     {
         $event->load('categories');
         return view('events.showEvent',compact('event'));
     }
 
-    /**
-     * Show the form for editing the specified event.
-     */
-    public function edit(Event $event)
-    {
-        abort_unless(auth()->id() === $event->creator_id, 403);
-        
-        $categories = Category::orderBy('name')->get();
-        $event->load('categories');
-        return view('events.editEvent', compact('event','categories'));
-    }
+/**
+ * Show the form to edit the selected event.
+ *
+ * Restricts access to the edit form to the event’s creator
+ * 
+ * @param \App\Models\Event $event instance containg event data.
+ * @return \Illuminate\View\View The view displays the event edit form.
+ *
+ */
+public function edit(Event $event)
+{
 
-    /**
-     * Update the Event.
-     */
+    abort_unless(auth()->id() === $event->creator_id, 403);
+        
+    $categories = Category::orderBy('name')->get();
+    $event->load('categories');
+    return view('events.editEvent', compact('event','categories'));
+}
+
+/**
+ * Update the selected event in the database.
+ *
+ * This method validates the incoming request data, ensures the authenticated user
+ * and stores the data mentioned in the form to the requested event
+ * 
+ * @param \Illuminate\Http\Request $request The HTTP request containing updated event data.
+ * @param \App\Models\Event $event The event instance to be updated
+ * @return \Illuminate\Http\RedirectResponse Redirects to the event view.
+ *
+ */
     public function update(Request $request, Event $event)
     {
         abort_unless(auth()->id() === $event->creator_id, 403);
@@ -114,9 +141,17 @@ public function publicEvents(Request $request){
         return redirect()->route('events.show', $event)->with('ok','Event updated');
     }
 
-    /**
-     * Remove the Event.
-     */
+/**
+ * Remove the specified event from the database.
+ *
+ * This method ensures that only the event's creator can delete it.
+ * If the event has existing bookings, deletion action returns error, Otherwise the event is deleted and user is redirected
+ * to all events listing
+ *
+ * @param \App\Models\Event $event The event instance data to be deleted
+ * @return \Illuminate\Http\RedirectResponse Redirects to the events.public if success with a alert message.
+ *
+ */
     public function destroy(Event $event)
     {
         abort_unless(auth()->id() === $event->creator_id,403);
@@ -140,7 +175,7 @@ public function publicEvents(Request $request){
         return view('events.index',compact('events','categories'));
     }
 
-    public function calendar(Request $req){
+   /* public function calendar(Request $req){
         $year = (int)$req->input('year',now()->year);
         $month = (int)$req -> input('month',now()->month);
         $start = \Carbon\Carbon::create($year,$month,1)->startOfMonth();
@@ -156,9 +191,15 @@ public function publicEvents(Request $request){
     $categories = Category::orderBy('name')->get();
     
     return view('events.calendar',compact('year','month','start','prev','next','eventsByDay','categories'));
-}
+}*/
 
-//Filter function for AJAX 
+/**
+ * Filters using the selected category and returns the paginated list of upcoming events via AJAX.
+ * The filtered list is paginated and returned as a partial view for dynamic rendering via AJAX.
+ *
+ * @param \Illuminate\Http\Request $req The request containing filter parameters.
+ * @return \Illuminate\View\View The partial view containing the filtered event list.
+ */
 public function filter(Request $req){
     $evts = Event::with('categories','creator','bookings')->upcomingEvents()
     ->orderBy('starts_at');

@@ -7,9 +7,16 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+/**
+ * Display a listing of the authenticated user's bookings.
+ *
+ * This method retrieves all bookings made by the currently user.
+ * @return \Illuminate\View\View The view displaying the user's bookings.
+ */
     public function show(){
         $role = auth()->user()->role;
         $user = auth()->user();
+
         //Dashboard for Attendee
         if($role === 'attendee')
             return redirect()->route('events.public');
@@ -25,7 +32,7 @@ class DashboardController extends Controller
              ORDER BY events.starts_at ASC",[$user->id]);
 
             return view('dashboard.organiser',compact('events'));
-        abort(403); // Show 403 if role is not allowed
+        abort(403); // Show 403 if role is not Attendee or Organiser
     }
 
     return view('dashboard.default');

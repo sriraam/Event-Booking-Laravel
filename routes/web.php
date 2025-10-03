@@ -18,12 +18,12 @@ Route::middleware('auth')->group(function () {
 
 Route::redirect('*/', '/login')->name('home');
 
-
+// Public events list (no auth)
+Route::get('/events', [EventController::class, 'publicEvents'])->name('events.index');
 Route::get('/events-view',[EventController::class,'publicEvents'])->name('events.public');
 Route::get('/events/filter',[EventController::class,'filter'])->name('events.filter');
 
 Route::resource('events',EventController::class)->except(['index','show'])->middleware('auth');
-//Route::get('/events-view',[EventController::class,'publicEvents'])->name('events.id');
 
 Route::get('/events/{event}',[EventController::class,'show'])->whereNumber('event')->name('events.show');
 
@@ -39,5 +39,5 @@ Route::middleware('auth')->group(function(){
 });
 //Routes for policy pages
 Route::view('/privacy-policy', 'legal.privacy')->name('privacy');
-Route::view('//terms-of-service', 'legal.terms')->name('terms');
+Route::view('/terms-of-service', 'legal.terms')->name('terms');
 require __DIR__.'/auth.php';
